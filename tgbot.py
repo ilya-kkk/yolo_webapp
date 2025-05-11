@@ -1,6 +1,7 @@
 import os
 import logging
 import shutil
+import numpy as np
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 from ultralytics import YOLO
@@ -66,6 +67,9 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # Обрабатываем изображение с помощью YOLO
         results = model.predict(image, save=False)
         annotated_image = results[0].plot()
+        
+        # Исправляем цвета (BGR -> RGB)
+        annotated_image = annotated_image[..., ::-1]
         
         # Конвертируем обратно в байты
         output = io.BytesIO()
