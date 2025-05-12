@@ -2,6 +2,7 @@ import os
 import logging
 import shutil
 import numpy as np
+import time
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 from ultralytics import YOLO
@@ -15,7 +16,7 @@ logging.basicConfig(
 )
 
 # Загрузка модели YOLO
-model = YOLO("yolov8n.pt")
+model = YOLO("yolo11m-seg.pt")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Обработчик команды /start"""
@@ -64,9 +65,15 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # Конвертируем в PIL Image
         image = Image.open(io.BytesIO(photo_bytes))
         
+        # Засекаем время начала обработки
+        start_time = time.time()
+        
         # Обрабатываем изображение с помощью YOLO
-        results = model.predict(image, save=False)
+        results = model.predict(image, save=False, conf=0.25, show_boxes=True, show_masks=True)
         annotated_image = results[0].plot()
+        
+        # Вычисляем время обработки
+        processing_time = time.time() - start_time
         
         # Исправляем цвета (BGR -> RGB)
         annotated_image = annotated_image[..., ::-1]
@@ -79,7 +86,7 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # Отправляем обработанное изображение
         await update.message.reply_photo(
             photo=output,
-            caption="Вот обработанное изображение с обнаруженными объектами!"
+            caption=f"Вот обработанное изображение с обнаруженными объектами!\nВремя обработки: {processing_time:.2f} секунд"
         )
         
     except Exception as e:
