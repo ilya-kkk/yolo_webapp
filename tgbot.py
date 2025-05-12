@@ -65,7 +65,7 @@ async def get_ai_response(text: str) -> str:
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Обработчик команды /start"""
     await update.message.reply_text(
-        "Привет! Отправь мне фотографию, и я обработаю её с помощью YOLO. Мы не сохраняем фотографии пользователей, и не используем их для обучения."
+        "Привет! Отправь мне фотографию, я обработаю её с помощью YOLO и попробую угадать что это за место. \n\n **Мы не сохраняем фотографии пользователей, и не используем их для обучения.**"
     )
 
 async def memory(update: Update, context: ContextTypes.DEFAULT_TYPE):
