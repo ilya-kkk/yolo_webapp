@@ -21,7 +21,7 @@ model = YOLO("yolo11m-seg.pt")
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Обработчик команды /start"""
     await update.message.reply_text(
-        "Привет! Отправь мне фотографию, и я обработаю её с помощью YOLO."
+        "Привет! Отправь мне фотографию, и я обработаю её с помощью YOLO. Мы не сохраняем фотографии, и не используем их для обучения."
     )
 
 async def memory(update: Update, context: ContextTypes.DEFAULT_TYPE):
