@@ -8,6 +8,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 from ultralytics import YOLO
 from PIL import Image
 import io
+from openai import OpenAI
 
 # Настройка логирования
 logging.basicConfig(
@@ -17,6 +18,29 @@ logging.basicConfig(
 
 # Загрузка модели YOLO
 model = YOLO("yolo11m-seg.pt")
+
+# Инициализация клиента OpenRouter
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.getenv("LLM_API_KEY"),
+)
+
+async def get_ai_response(text: str) -> str:
+    """Получение ответа от AI модели"""
+    try:
+        response = client.chat.completions.create(
+            model="meta-llama/llama-3.1-8b-instruct",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": text}
+            ],
+            temperature=0.7,
+            max_tokens=512
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        logging.error(f"Ошибка при получении ответа от AI: {e}")
+        return "Извините, произошла ошибка при обработке запроса."
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Обработчик команды /start"""
@@ -53,7 +77,9 @@ async def memory(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Обработчик текстовых сообщений"""
-    await update.message.reply_text("иди нахуй")
+    # Получаем ответ от AI
+    response = await get_ai_response(update.message.text)
+    await update.message.reply_text(response)
 
 async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Обработчик фотографий"""
