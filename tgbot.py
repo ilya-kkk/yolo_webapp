@@ -22,7 +22,7 @@ model = YOLO("yolo11m-seg.pt")
 # Инициализация клиента OpenRouter
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
-    api_key=os.getenv("LLM_API_KEY"),
+    api_key=os.getenv("OPENROUTER_API_KEY"),
 )
 
 async def get_ai_response(text: str) -> str:
