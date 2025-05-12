@@ -2,9 +2,9 @@ version: '3.8'
 
 services:
   bot:
-    # build: . 
+    build: . 
     # image: yolo_webapp-bot:latest
-    image: ilya9kkk/tgbot:latest
+    # image: ilya9kkk/tgbot:latest
 
     environment:
       - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
