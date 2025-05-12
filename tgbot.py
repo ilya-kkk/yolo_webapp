@@ -21,7 +21,7 @@ model = YOLO("yolo11m-seg.pt")
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Обработчик команды /start"""
     await update.message.reply_text(
-        "Привет! Отправь мне фотографию, и я обработаю её с помощью YOLO. Мы не сохраняем фотографии, и не используем их для обучения."
+        "Привет! Отправь мне фотографию, и я обработаю её с помощью YOLO. Мы не сохраняем фотографии пользователей, и не используем их для обучения."
     )
 
 async def memory(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -69,7 +69,7 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         start_time = time.time()
         
         # Обрабатываем изображение с помощью YOLO
-        results = model.predict(image, save=False, conf=0.25, show_boxes=True, show_masks=True)
+        results = model.predict(image, save=False, conf=0.25)
         annotated_image = results[0].plot()
         
         # Вычисляем время обработки
